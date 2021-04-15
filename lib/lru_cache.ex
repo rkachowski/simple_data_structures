@@ -15,16 +15,16 @@ defmodule SimpleDataStructures.LRUCache do
     end
   end
 
-  def put(cache = %LRUCache{capacity: cap, lru: lru, store: store}, key, value)
-      when length(lru) == cap and not :erlang.is_map_key(key, store) do
-    cache
-    |> evict
-    |> put(key, value)
-  end
-
   def put(cache = %LRUCache{store: store, lru: lru}, key, value)
       when :erlang.is_map_key(key, store) do
     %LRUCache{cache | store: Map.put(store, key, value), lru: update_lru(lru, key)}
+  end
+
+  def put(cache = %LRUCache{capacity: cap, lru: lru}, key, value)
+      when length(lru) == cap do
+    cache
+    |> evict
+    |> put(key, value)
   end
 
   def put(cache = %LRUCache{store: store, lru: lru}, key, value) do
