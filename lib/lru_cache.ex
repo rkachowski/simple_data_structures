@@ -1,5 +1,3 @@
-require IEx
-
 defmodule SimpleDataStructures.LRUCache do
   alias __MODULE__
 
@@ -24,7 +22,8 @@ defmodule SimpleDataStructures.LRUCache do
     |> put(key, value)
   end
 
-  def put(cache = %LRUCache{store: store, lru: lru}, key, value) when :erlang.is_map_key(key, store) do
+  def put(cache = %LRUCache{store: store, lru: lru}, key, value)
+      when :erlang.is_map_key(key, store) do
     %LRUCache{cache | store: Map.put(store, key, value), lru: update_lru(lru, key)}
   end
 
@@ -40,7 +39,6 @@ defmodule SimpleDataStructures.LRUCache do
 
   defp evict(cache = %LRUCache{lru: lru, store: store}) do
     to_evict = List.last(lru)
-    IO.puts("evicting #{to_evict}")
 
     %LRUCache{
       cache
