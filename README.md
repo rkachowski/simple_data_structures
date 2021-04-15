@@ -1,6 +1,6 @@
 # SimpleDataStructures
 
-**TODO: Add description**
+A package containing some simple data structures for use in coding challenges and kata + other non production settings.
 
 ## Installation
 
@@ -18,4 +18,3 @@ end
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
 be found at [https://hexdocs.pm/simple_data_structures](https://hexdocs.pm/simple_data_structures).
-
