@@ -9,7 +9,7 @@ defmodule SimpleDataStructuresTest.LRUCache do
   end
 
   test "simply stores and retrieves value" do
-    {cache, result} =
+    {_, result} =
       LRUCache.new(2)
       |> LRUCache.put(:test_key, :test_value)
       |> LRUCache.get(:test_key)
@@ -17,12 +17,24 @@ defmodule SimpleDataStructuresTest.LRUCache do
     assert result == :test_value
   end
 
+  test "updates lru list upon get" do
+    cache =
+      LRUCache.new(2)
+      |> LRUCache.put(:test_key, :test_value)
+      |> LRUCache.put(:test_key2, :test_value2)
+
+    assert :test_key2 == hd(cache.lru)
+
+    {cache, _} = LRUCache.get(cache, :test_key)
+
+    assert :test_key == hd(cache.lru)
+  end
+
   test "evicts lru upon capacity" do
     cache =
       LRUCache.new(2)
       |> LRUCache.put(:test_key, :test_value)
       |> LRUCache.put(:test_key2, :test_value2)
-      # move :test_key
       |> LRUCache.get(:test_key)
       |> elem(0)
       |> LRUCache.put(:test_key3, :test_value3)
@@ -31,5 +43,25 @@ defmodule SimpleDataStructuresTest.LRUCache do
     assert {_, :test_value} = LRUCache.get(cache, :test_key)
     assert {_, -1} = LRUCache.get(cache, :test_key2)
     assert {_, :test_value3} = LRUCache.get(cache, :test_key3)
+  end
+
+  test "handles duplicate keys" do
+    cache =
+      LRUCache.new(2)
+      |> LRUCache.put(:test_key, :test_value)
+      |> LRUCache.put(:test_key, :test_value2)
+
+    assert {_, :test_value2} = LRUCache.get(cache, :test_key)
+    assert 1 = length(cache.lru)
+
+    cache =
+      cache
+      |> LRUCache.put(:test_key2, :test_value3)
+      # now at capacity
+      |> LRUCache.put(:test_key, :test_value4)
+
+    assert {_, :test_value4} = LRUCache.get(cache, :test_key)
+    assert 2 = length(cache.lru)
+    assert :test_key = hd(cache.lru)
   end
 end
